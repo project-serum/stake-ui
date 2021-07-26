@@ -48,11 +48,13 @@ export const networks: Networks = {
       srm: new PublicKey('5vJRzKtcp4fJxqmR7qzajkaKSiAb6aT9grRsaZKXU222'),
       msrm: new PublicKey('7uURiX2DwCpRuMFebKSkFtX9v5GK1Cd8nWLL8tyoyxZY'),
       fida: new PublicKey('5C2ayX1E2SJ5kKEmDCA9ue9eeo3EPR34QFrhyzbbs3qh'),
+      dxl: new PublicKey('BQtp3xGPTFXJSt1MVKxtVSefRcBWmUkzTNM3g1t9efcK'),
     },
     mints: {
       srm: new PublicKey('SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt'),
       msrm: new PublicKey('MSRMcoVyrFxnSgo5uXwone5SKcGhT1KEJMFEkMEWf9L'),
       fida: new PublicKey('EchesyfXePKdLtoiZSL8pBe8Myagyy8ZRqsACNCFGnvp'),
+      dxl: new PublicKey('GsNzxJfFn6zQdJGeYsupJWzUAm57Ba7335mfhWvFiE9Z'),
     },
   },
   devnet: {
