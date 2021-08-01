@@ -4,11 +4,12 @@ import React, {
   useEffect,
   useCallback,
 } from 'react';
+import * as BufferLayout from 'buffer-layout';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import { PublicKey } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import {
-  token,
   parseMintAccount,
   parseTokenAccount,
 } from '@project-serum/common';
@@ -295,7 +296,7 @@ export async function refreshAccounts({
 
   // All token accounts owned by the current user.
   const fetchOwnedTokenAccounts = async () => {
-    const ownedTokenAccounts = await token.getOwnedTokenAccounts(
+    const ownedTokenAccounts = await getOwnedTokenAccounts(
       lockupClient.provider.connection,
       wallet.publicKey,
     );
@@ -545,4 +546,56 @@ export async function fetchAndDispatchMemberAccounts(
       },
     });
   });
+}
+
+export async function getOwnedTokenAccounts(connection: Connection, publicKey: PublicKey) {
+  let filters = getOwnedAccountsFilters(publicKey);
+  let resp = await connection.getProgramAccounts(
+    TOKEN_PROGRAM_ID,
+    {
+      filters,
+    },
+  );
+  const result =  resp
+    .map(({ pubkey, account: { data } }) => {
+      return {
+        publicKey: new PublicKey(pubkey),
+        account: parseTokenAccountData(data),
+      };
+    });
+
+  return result;
+}
+
+export const ACCOUNT_LAYOUT = BufferLayout.struct([
+  BufferLayout.blob(32, 'mint'),
+  BufferLayout.blob(32, 'owner'),
+  BufferLayout.nu64('amount'),
+  BufferLayout.blob(93),
+]);
+
+
+export function getOwnedAccountsFilters(publicKey: PublicKey) {
+  return [
+    {
+      memcmp: {
+        // @ts-ignore
+        offset: ACCOUNT_LAYOUT.offsetOf('owner'),
+        bytes: publicKey.toBase58(),
+      },
+    },
+    {
+      dataSize: ACCOUNT_LAYOUT.span,
+    },
+  ];
+}
+
+export function parseTokenAccountData(data: any) {
+  // @ts-ignore
+  let { mint, owner, amount } = ACCOUNT_LAYOUT.decode(data);
+  return {
+    mint: new PublicKey(mint),
+    owner: new PublicKey(owner),
+    amount,
+  };
 }

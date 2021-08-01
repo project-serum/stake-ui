@@ -1615,10 +1615,10 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@project-serum/anchor@^0.4.4":
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/@project-serum/anchor/-/anchor-0.4.5.tgz#6c52b5722a3133d5f1df793bfbc1af5c07b0316d"
-  integrity sha512-LxcV8yZae/sOBPZULDlVGqsIyFkjhmJKi2kx1id9EybECX5QqYQTMS69ozdH2e+5VEDjw0dCfRqBCMJ97ylmmQ==
+"@project-serum/anchor@^0.4.6":
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/@project-serum/anchor/-/anchor-0.4.6.tgz#69985f2a028ce8e02f3def8bd97a9f46d39fd4bd"
+  integrity sha512-Hjt8tJ9tCGnpBQy0akPCuyAdQf6Yyf7tZ/pPw40Wnwty+5qnGUh/1kDfBu68QN9Akm8Ul3ixkr2sUySdyqQgdQ==
   dependencies:
     "@project-serum/borsh" "^0.1.1"
     "@solana/web3.js" "^1.2.0"
@@ -3472,7 +3472,7 @@ buffer-indexof@^1.0.0:
   resolved "https://registry.yarnpkg.com/buffer-indexof/-/buffer-indexof-1.1.1.tgz#52fabcc6a606d1a00302802648ef68f639da268c"
   integrity sha512-4/rOEg86jivtPTeOUUT61jJO1Ya1TrR/OkqCSZDyq84WJh3LuuiphBYJN+fm5xufIk4XAFcEwte/8WzC8If/1g==
 
-buffer-layout@^1.2.0:
+buffer-layout@^1.2.0, buffer-layout@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/buffer-layout/-/buffer-layout-1.2.2.tgz#b9814e7c7235783085f9ca4966a0cfff112259d5"
   integrity sha512-kWSuLN694+KTk8SrYvCqwP2WcgQjoRCiF5b4QDvkkz8EmgD+aWAIceGFKMIAdmF/pH+vpgNV3d3kAKorcdAmWA==

@@ -21,6 +21,7 @@ export default function OwnedTokenAccountsSelect(p: Props) {
     if (!mint) {
       return [];
     }
+		console.log('state', state.common);
     return state.common.ownedTokenAccounts.filter(
       ota => ota.account.mint.toString() === mint.toString(),
     );
