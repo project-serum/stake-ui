@@ -365,16 +365,14 @@ export function WalletConnectButton(): ReactElement {
         <WalletDisconnectButton />
       </div>
       <div
+				onClick={() => wallet.connect() }
         style={{
           display: "flex",
           justifyContent: "center",
           flexDirection: "column",
         }}
-        onClick={() => {
-          wallet.connect();
-        }}
       >
-        <WalletMultiButton onClick={() => {}} />
+        <WalletMultiButton />
       </div>
     </WalletDialogProvider>
   );
