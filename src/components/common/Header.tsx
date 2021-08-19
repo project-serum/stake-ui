@@ -279,39 +279,6 @@ function NetworkSelector() {
   );
 }
 
-function UserSelector() {
-  const { wallet } = useWallet();
-
-  return (
-    <Select
-      displayEmpty
-      renderValue={() => {
-        return (
-          <Typography style={{ overflow: "hidden" }}>
-            {wallet.publicKey?.toString()}
-          </Typography>
-        );
-      }}
-      style={{
-        marginLeft: "12px",
-        width: "150px",
-      }}
-      onChange={(e) => {
-        if (e.target.value === "disconnect") {
-          wallet.disconnect();
-        }
-      }}
-    >
-      <MenuItem value="disconnect">
-        <IconButton color="inherit">
-          <ExitToAppIcon />
-          <Typography style={{ marginLeft: "15px" }}>Disconnect</Typography>
-        </IconButton>
-      </MenuItem>
-    </Select>
-  );
-}
-
 export function WalletConnectButton(): ReactElement {
   const { showDisconnect } = useSelector((state: StoreState) => {
     return {
@@ -338,9 +305,7 @@ export function WalletConnectButton(): ReactElement {
         item: {},
       });
     });
-
     wallet.on("connect", async () => {
-      console.log("on connect?");
       dispatch({
         type: ActionType.CommonWalletDidConnect,
         item: {},
@@ -365,7 +330,7 @@ export function WalletConnectButton(): ReactElement {
         <WalletDisconnectButton />
       </div>
       <div
-				onClick={() => wallet.connect() }
+        onClick={() => wallet.connect()}
         style={{
           display: "flex",
           justifyContent: "center",
