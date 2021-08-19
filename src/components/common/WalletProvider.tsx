@@ -12,18 +12,13 @@ import {
   Connection,
   ConfirmOptions,
 } from "@solana/web3.js";
-// @ts-ignore
-import SolWallet from "@project-serum/sol-wallet-adapter";
 import { Provider } from "@project-serum/common";
 import { Program } from "@project-serum/anchor";
 import { WalletProvider as SolanaWalletProvider } from "@solana/wallet-adapter-react";
 import {
-  getLedgerWallet,
-  getMathWallet,
   getPhantomWallet,
   getSolflareWallet,
   getSolletWallet,
-  getSolongWallet,
 } from "@solana/wallet-adapter-wallets";
 import { State as StoreState } from "../../store/reducer";
 import LockupIdl from "../../idl/lockup";
@@ -46,7 +41,7 @@ type WalletContextValues = {
   wallet: Wallet;
   lockupClient: Program;
   registryClient: Program;
-  multisigClient: Program;
+	multisigClient: Program;
 };
 
 export default function WalletProvider(
@@ -93,13 +88,11 @@ function WalletProviderInner(props: PropsWithChildren<ReactNode>) {
         network.registryProgramId,
         provider
       );
-
       const multisigClient = new Program(
         MultisigIdl,
         network.multisigProgramId,
-        provider
+        provider,
       );
-
       return {
         wallet,
         lockupClient,
