@@ -1,30 +1,35 @@
-import React, { useState, useEffect, ReactElement } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { useSnackbar } from 'notistack';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Select from '@material-ui/core/Select';
-import Menu from '@material-ui/core/Menu';
-import Link from '@material-ui/core/Link';
-import Typography from '@material-ui/core/Typography';
-import MenuItem from '@material-ui/core/MenuItem';
-import IconButton from '@material-ui/core/IconButton';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import Button from '@material-ui/core/Button';
-import PersonIcon from '@material-ui/icons/Person';
-import BubbleChartIcon from '@material-ui/icons/BubbleChart';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { refreshAccounts } from './BootstrapProvider';
-import { networks } from '../../store/config';
+import React, { useState, useEffect, ReactElement } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { useSnackbar } from "notistack";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Select from "@material-ui/core/Select";
+import Menu from "@material-ui/core/Menu";
+import Link from "@material-ui/core/Link";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import Button from "@material-ui/core/Button";
+import PersonIcon from "@material-ui/icons/Person";
+import BubbleChartIcon from "@material-ui/icons/BubbleChart";
+import RefreshIcon from "@material-ui/icons/Refresh";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import {
+  WalletDialogProvider,
+  WalletDisconnectButton,
+  WalletMultiButton,
+} from "@solana/wallet-adapter-material-ui";
+import { Popper, MenuList, MenuItem, Grow } from "@material-ui/core";
+import { refreshAccounts } from "./BootstrapProvider";
+import { networks } from "../../store/config";
 import {
   State as StoreState,
   ProgramAccount,
   BootstrapState,
-} from '../../store/reducer';
-import { ActionType } from '../../store/actions';
-import { useWallet } from './WalletProvider';
+} from "../../store/reducer";
+import { ActionType } from "../../store/actions";
+import { useWallet } from "./WalletProvider";
 
 type HeaderProps = {
   isAppReady: boolean;
@@ -49,25 +54,28 @@ export default function Header(props: HeaderProps) {
     <AppBar
       position="static"
       style={{
-        background: '#ffffff',
-        color: '#272727',
-        boxShadow: 'none',
-        borderBottom: 'solid 1pt #ccc',
+        background: "#ffffff",
+        color: "#272727",
+        boxShadow: "none",
+        borderBottom: "solid 1pt #ccc",
       }}
     >
       <Toolbar>
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            width: '100%',
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
           }}
         >
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: "flex" }}>
             <SerumLogoButton />
             <BarButton label="Stake" hrefClient="/stake" />
             <BarButton label="Lockup" hrefClient="/lockup" />
-            <BarButton label="Multisig" href="https://multisig.projectserum.com" />
+            <BarButton
+              label="Multisig"
+              href="https://multisig.projectserum.com"
+            />
             <BarButton label="Trade" href="https://dex.projectserum.com" />
             {network.srmFaucet && (
               <BarButton
@@ -78,14 +86,14 @@ export default function Header(props: HeaderProps) {
           </div>
           <div
             style={{
-              display: 'flex',
+              display: "flex",
             }}
           >
             <div
               onClick={() => {
                 setIsRefreshing(true);
                 enqueueSnackbar(`Refreshing`, {
-                  variant: 'info',
+                  variant: "info",
                 });
                 refreshAccounts({
                   dispatch,
@@ -98,30 +106,30 @@ export default function Header(props: HeaderProps) {
                     setIsRefreshing(false);
                     closeSnackbar();
                   })
-                  .catch(err => {
+                  .catch((err) => {
                     setIsRefreshing(false);
                     closeSnackbar();
                     enqueueSnackbar(`There was a problem refreshing: ${err}`, {
-                      variant: 'error',
+                      variant: "error",
                       autoHideDuration: 2500,
                     });
                   });
               }}
               style={{
-                display: isAppReady ? 'block' : 'none',
-                justifyContent: 'center',
-                flexDirection: 'column',
-                marginRight: '10px',
+                display: isAppReady ? "block" : "none",
+                justifyContent: "center",
+                flexDirection: "column",
+                marginRight: "10px",
               }}
             >
               {isRefreshing ? (
                 <div
                   style={{
-                    marginTop: '8px',
-                    padding: '10px',
+                    marginTop: "8px",
+                    padding: "10px",
                   }}
                 >
-                  <CircularProgress style={{ width: '24px', height: '24px' }} />
+                  <CircularProgress style={{ width: "24px", height: "24px" }} />
                 </div>
               ) : (
                 <div>
@@ -132,12 +140,7 @@ export default function Header(props: HeaderProps) {
               )}
             </div>
             <NetworkSelector />
-            <WalletConnectButton
-              style={{
-                display: isAppReady ? 'none' : '',
-              }}
-            />
-            {isAppReady && <UserSelector />}
+            <WalletConnectButton />
           </div>
         </div>
       </Toolbar>
@@ -148,19 +151,19 @@ export default function Header(props: HeaderProps) {
 function SerumLogoButton() {
   const history = useHistory();
   return (
-    <div style={{ display: 'flex' }} onClick={() => history.push('/')}>
+    <div style={{ display: "flex" }} onClick={() => history.push("/")}>
       <Button color="inherit">
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
           }}
         >
           <img
             style={{
-              display: 'block',
-              height: '35px',
+              display: "block",
+              height: "35px",
             }}
             alt="Logo"
             src="http://dex.projectserum.com/static/media/logo.49174c73.svg"
@@ -183,26 +186,26 @@ function BarButton(props: BarButtonProps) {
   return (
     <div
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
       }}
       onClick={() => hrefClient && history.push(hrefClient)}
     >
       <Link
-        style={{ color: 'inherit', textDecoration: 'none' }}
+        style={{ color: "inherit", textDecoration: "none" }}
         href={href}
         target="_blank"
       >
         <Button color="inherit">
           <div
             style={{
-              display: 'flex',
-              justifyContent: 'center',
-              flexDirection: 'column',
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
             }}
           >
-            <Typography style={{ fontSize: '15px' }}>{label}</Typography>
+            <Typography style={{ fontSize: "15px" }}>{label}</Typography>
           </div>
         </Button>
       </Link>
@@ -224,24 +227,24 @@ function NetworkSelector() {
   return (
     <div
       style={{
-        marginRight: '10px',
-        fontSize: '15px',
-        display: 'flex',
-        justifyContent: 'center',
-        flexDirection: 'column',
+        marginRight: "10px",
+        fontSize: "15px",
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
       }}
     >
       <Button
         color="inherit"
-        onClick={e =>
+        onClick={(e) =>
           setAnchorEl(
             // @ts-ignore
-            e.currentTarget,
+            e.currentTarget
           )
         }
       >
         <BubbleChartIcon />
-        <Typography style={{ marginLeft: '5px', fontSize: '15px' }}>
+        <Typography style={{ marginLeft: "5px", fontSize: "15px" }}>
           {network.label}
         </Typography>
       </Button>
@@ -250,8 +253,8 @@ function NetworkSelector() {
         open={Boolean(anchorEl)}
         onClose={handleClose}
         style={{
-          marginLeft: '12px',
-          color: 'white',
+          marginLeft: "12px",
+          color: "white",
         }}
       >
         {Object.keys(networks).map((n: string) => (
@@ -284,17 +287,17 @@ function UserSelector() {
       displayEmpty
       renderValue={() => {
         return (
-          <Typography style={{ overflow: 'hidden' }}>
+          <Typography style={{ overflow: "hidden" }}>
             {wallet.publicKey?.toString()}
           </Typography>
         );
       }}
       style={{
-        marginLeft: '12px',
-        width: '150px',
+        marginLeft: "12px",
+        width: "150px",
       }}
-      onChange={e => {
-        if (e.target.value === 'disconnect') {
+      onChange={(e) => {
+        if (e.target.value === "disconnect") {
           wallet.disconnect();
         }
       }}
@@ -302,20 +305,14 @@ function UserSelector() {
       <MenuItem value="disconnect">
         <IconButton color="inherit">
           <ExitToAppIcon />
-          <Typography style={{ marginLeft: '15px' }}>Disconnect</Typography>
+          <Typography style={{ marginLeft: "15px" }}>Disconnect</Typography>
         </IconButton>
       </MenuItem>
     </Select>
   );
 }
 
-type WalletConnectButtonProps = {
-  style?: any;
-};
-
-export function WalletConnectButton(
-  props: WalletConnectButtonProps,
-): ReactElement {
+export function WalletConnectButton(): ReactElement {
   const { showDisconnect } = useSelector((state: StoreState) => {
     return {
       showDisconnect: state.common.isWalletConnected,
@@ -327,9 +324,9 @@ export function WalletConnectButton(
 
   // Wallet connection event listeners.
   useEffect(() => {
-    wallet.on('disconnect', () => {
-      enqueueSnackbar('Disconnected from wallet', {
-        variant: 'info',
+    wallet.on("disconnect", () => {
+      enqueueSnackbar("Disconnected from wallet", {
+        variant: "info",
         autoHideDuration: 2500,
       });
       dispatch({
@@ -341,7 +338,9 @@ export function WalletConnectButton(
         item: {},
       });
     });
-    wallet.on('connect', async () => {
+
+    wallet.on("connect", async () => {
+      console.log("on connect?");
       dispatch({
         type: ActionType.CommonWalletDidConnect,
         item: {},
@@ -353,27 +352,30 @@ export function WalletConnectButton(
     });
   }, [wallet, dispatch, enqueueSnackbar, lockupClient.provider.connection]);
 
-  return showDisconnect ? (
-    <Button
-      style={props.style}
-      color="inherit"
-      onClick={() => wallet.disconnect()}
-    >
-      <ExitToAppIcon />
-      <Typography style={{ marginLeft: '5px', fontSize: '15px' }}>
-        Disconnect
-      </Typography>
-    </Button>
-  ) : (
-    <Button
-      style={props.style}
-      color="inherit"
-      onClick={() => wallet.connect()}
-    >
-      <PersonIcon />
-      <Typography style={{ marginLeft: '5px', fontSize: '15px' }}>
-        Connect wallet
-      </Typography>
-    </Button>
+  return (
+    <WalletDialogProvider>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+        }}
+        onClick={() => wallet.disconnect()}
+      >
+        <WalletDisconnectButton />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+        }}
+        onClick={() => {
+          wallet.connect();
+        }}
+      >
+        <WalletMultiButton onClick={() => {}} />
+      </div>
+    </WalletDialogProvider>
   );
 }
