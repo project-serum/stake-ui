@@ -4,14 +4,11 @@ import { useHistory } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Select from "@material-ui/core/Select";
 import Menu from "@material-ui/core/Menu";
 import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import Button from "@material-ui/core/Button";
-import PersonIcon from "@material-ui/icons/Person";
 import BubbleChartIcon from "@material-ui/icons/BubbleChart";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -20,7 +17,8 @@ import {
   WalletDisconnectButton,
   WalletMultiButton,
 } from "@solana/wallet-adapter-material-ui";
-import { Popper, MenuList, MenuItem, Grow } from "@material-ui/core";
+import { MenuItem } from "@material-ui/core";
+import { useWallet as useSolana } from "@solana/wallet-adapter-react";
 import { refreshAccounts } from "./BootstrapProvider";
 import { networks } from "../../store/config";
 import {
@@ -287,15 +285,12 @@ export function WalletConnectButton(): ReactElement {
   });
   const dispatch = useDispatch();
   const { wallet, lockupClient } = useWallet();
+	const { connected } = useSolana();
   const { enqueueSnackbar } = useSnackbar();
 
   // Wallet connection event listeners.
   useEffect(() => {
-    wallet.on("disconnect", () => {
-      enqueueSnackbar("Disconnected from wallet", {
-        variant: "info",
-        autoHideDuration: 2500,
-      });
+		if (!connected) {
       dispatch({
         type: ActionType.CommonWalletDidDisconnect,
         item: {},
@@ -304,18 +299,19 @@ export function WalletConnectButton(): ReactElement {
         type: ActionType.CommonTriggerShutdown,
         item: {},
       });
-    });
-    wallet.on("connect", async () => {
-      dispatch({
-        type: ActionType.CommonWalletDidConnect,
-        item: {},
-      });
-      dispatch({
-        type: ActionType.CommonTriggerBootstrap,
-        item: {},
-      });
-    });
-  }, [wallet, dispatch, enqueueSnackbar, lockupClient.provider.connection]);
+		} else {
+			if (wallet.publicKey) {
+				dispatch({
+					type: ActionType.CommonWalletDidConnect,
+					item: {},
+				});
+				dispatch({
+					type: ActionType.CommonTriggerBootstrap,
+					item: {},
+				});
+			}
+		}
+  }, [connected, wallet, wallet.publicKey, dispatch, enqueueSnackbar, lockupClient.provider.connection]);
 
   return (
     <WalletDialogProvider>
@@ -325,12 +321,10 @@ export function WalletConnectButton(): ReactElement {
           justifyContent: "center",
           flexDirection: "column",
         }}
-        onClick={() => wallet.disconnect()}
       >
         <WalletDisconnectButton />
       </div>
       <div
-        onClick={() => wallet.connect()}
         style={{
           display: "flex",
           justifyContent: "center",

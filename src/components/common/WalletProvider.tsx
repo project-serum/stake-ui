@@ -60,13 +60,14 @@ export default function WalletProvider(
 }
 
 function WalletProviderInner(props: PropsWithChildren<ReactNode>) {
-  const { wallet: solWallet } = useSolana();
+  const { wallet: solWallet, connected, publicKey } = useSolana();
   const { walletProvider, network } = useSelector((state: StoreState) => {
     return {
       walletProvider: state.common.walletProvider,
       network: state.common.network,
     };
   });
+	console.log('adapter', publicKey?.toString(), solWallet?.adapter());
   const { wallet, lockupClient, registryClient, multisigClient } =
     useMemo(() => {
       const opts: ConfirmOptions = {
@@ -74,7 +75,7 @@ function WalletProviderInner(props: PropsWithChildren<ReactNode>) {
         commitment: "recent",
       };
       const connection = new Connection(network.url, opts.preflightCommitment);
-      const wallet = new Wallet(solWallet ? solWallet.adapter() : undefined);
+      const wallet = new Wallet(solWallet?.adapter());
       // @ts-ignore
       const provider = new Provider(connection, wallet, opts);
 
@@ -99,7 +100,7 @@ function WalletProviderInner(props: PropsWithChildren<ReactNode>) {
         registryClient,
         multisigClient,
       };
-    }, [solWallet, walletProvider, network]);
+    }, [connected, solWallet, walletProvider, network]);
 
   return (
     <WalletContext.Provider
@@ -112,8 +113,9 @@ function WalletProviderInner(props: PropsWithChildren<ReactNode>) {
 
 class Wallet {
   get publicKey(): PublicKey | undefined {
+		console.log('adapt:', this.adapter?.publicKey);
     // @ts-ignore
-    return this.adapter ? this.adapter.publicKey : undefined;
+    return this.adapter?.publicKey
   }
 
   constructor(readonly adapter: WalletAdapter | undefined) {}
