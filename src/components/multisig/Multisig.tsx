@@ -265,7 +265,7 @@ function NewMultisigDialog({
   const { enqueueSnackbar } = useSnackbar();
   const [threshold, setThreshold] = useState(2);
   // @ts-ignore
-  const zeroAddr = new PublicKey().toString();
+  const zeroAddr = PublicKey.default.toString();
   const [participants, setParticipants] = useState([
     multisigClient.provider.wallet.publicKey.toString(),
     zeroAddr,
@@ -937,7 +937,7 @@ function SetOwnersListItemDetails({
 }) {
   const { multisigClient } = useWallet();
   // @ts-ignore
-  const zeroAddr = new PublicKey().toString();
+  const zeroAddr = PublicKey.default.toString();
   const [participants, setParticipants] = useState([
     multisigClient.provider.wallet.publicKey.toString(),
     zeroAddr,
