@@ -60,7 +60,7 @@ export const networks: Networks = {
   devnet: {
     // Cluster.
     label: 'Devnet',
-    url: 'https://devnet.solana.com',
+    url: 'https://api.devnet.solana.com',
     explorerClusterSuffix: 'devnet',
 
     srmFaucet: null,
